@@ -54,6 +54,9 @@ function loadAssembliesFromDirsAndAddTypeFromSource{
 	add-type $script -lang csharp -compilerparam $cp
 
 }
+function assemblies_current{
+	[appdomain]::currentdomain.getassemblies() | sort -property fullname | format-table fullname
+}
 	
 
 Set-Alias -name ildasm  -value 'C:\Program Files (x86)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools\ildasm.exe'  -description "IL Disassembler"
