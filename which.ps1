@@ -2,10 +2,8 @@
 #
 #  TODO  if can't find, go look through path to find executable. (Then can set aliases for)
 
-function which($name)
-{
-    foreach($cmd in (Get-Command $name | Sort-Object $_.CommandType ))
-    {
+function which($name){
+    foreach($cmd in $(Get-Command $name | Sort-Object $_.CommandType )){
         echo ""
         Write-Output ( [string]::format( "{0,-18}{1}", $cmd.CommandType, $cmd.Name))
         
@@ -20,6 +18,8 @@ function which($name)
             describe_command_property $cmd "HelpUri" "help" ;
         }
     }
+	get-alias|?{$_.Definition -like $name}
+	
 }
 
 function describe_command_property($cmd,$propertyName,$aliasName){
