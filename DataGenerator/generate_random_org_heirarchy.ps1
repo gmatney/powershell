@@ -26,6 +26,39 @@ function random_popular_name(){
     Write-Output($randomName)
 }
 
+function randomChars(){
+    #https://blogs.technet.microsoft.com/heyscriptingguy/2015/11/05/generate-random-letters-with-powershell/
+    #65-90 represent the upper case letters of the alphabet
+    #97-122 are lower
+	Write-Output(-join ((65..90) + (97..122) | Get-Random -Count 5 | % {[char]$_}))
+}
+
+
+function department_name(){
+    #TODO think of more interesting
+
+}
+
+$orgUniqueIdCount=1;
+function getOrgUniqueID(){
+    Set-Variable -Name orgUniqueIdCount -Value ($orgUniqueIdCount + 1) -Scope Global
+    Write-Output($orgUniqueIdCount++)
+}
+
+function generate_random_employee(){c
+    $unit = $(generate_org_node $(getOrgUniqueID) $(random_popular_name) "EMPLOYEE")
+    Write-Output($unit)
+}
+
+function generate_org_node($id, $name, $class){
+
+    $object = New-Object -TypeName PSObject
+    $object | Add-Member -MemberType NoteProperty -Name ID      -Value "$id"
+    $object | Add-Member -MemberType NoteProperty -Name Name    -Value "$name"
+    $object | Add-Member -MemberType NoteProperty -Name Class   -Value "$class"
+    Write-Output $object
+}
+
 function generate_org_associations($maxDepth, $minSub, $maxSub){
 	
 }
