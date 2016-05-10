@@ -45,26 +45,37 @@ function getOrgUniqueID(){
     Write-Output($orgUniqueIdCount++)
 }
 
-function generate_random_employee(){c
+function generate_random_employee(){
     $unit = $(generate_org_node $(getOrgUniqueID) $(random_popular_name) "EMPLOYEE")
     Write-Output($unit)
 }
 
-function generate_org_node($id, $name, $class){
+function generate_org_node($id, $name, $class, $orgId, $orgName){
 
     $object = New-Object -TypeName PSObject
-    $object | Add-Member -MemberType NoteProperty -Name ID      -Value "$id"
-    $object | Add-Member -MemberType NoteProperty -Name Name    -Value "$name"
-    $object | Add-Member -MemberType NoteProperty -Name Class   -Value "$class"
+    $object | Add-Member -MemberType NoteProperty -Name ID       -Value "$id"
+    $object | Add-Member -MemberType NoteProperty -Name Name     -Value "$name"
+    $object | Add-Member -MemberType NoteProperty -Name Class    -Value "$class"
+    if($orgId   -ne $null) { $object | Add-Member -MemberType NoteProperty -Name OrgId    -Value "$orgId"  }
+    if($orgName -ne $null) { $object | Add-Member -MemberType NoteProperty -Name OrgName  -Value "$orgName"}
     Write-Output $object
 }
 
 function generate_org_associations($maxDepth, $minSub, $maxSub){
 	
+    
 }
 
 function __generate_org_association($maxDepth, $parentName, $minSub, $maxSub){
 	
+    
+}
+
+#Example: get_100_random_employees | ConvertTo-Json
+function get_100_random_employees(){
+    $employees = New-Object System.Collections.ArrayList
+    1..100 |%{ [void] $employees.Add( $(generate_random_employee) ) }
+    Write-Output($employees)
 }
 
 
