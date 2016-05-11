@@ -45,29 +45,34 @@ function getOrgUniqueID(){
     Write-Output($orgUniqueIdCount++)
 }
 
-function generate_random_employee(){
-    $unit = $(generate_org_node $(getOrgUniqueID) $(random_popular_name) "EMPLOYEE")
+function generate_random_employee($linksUpTo){
+    $unit = $(generate_org_node $(getOrgUniqueID) $(random_popular_name) "EMPLOYEE" $linksUpTo)
     Write-Output($unit)
 }
 
-function generate_org_node($id, $name, $class, $orgId, $orgName){
+function generate_org_node($id, $name, $class, $linksUpTo, $orgId, $orgName){
 
     $object = New-Object -TypeName PSObject
-    $object | Add-Member -MemberType NoteProperty -Name ID       -Value "$id"
-    $object | Add-Member -MemberType NoteProperty -Name Name     -Value "$name"
-    $object | Add-Member -MemberType NoteProperty -Name Class    -Value "$class"
-    if($orgId   -ne $null) { $object | Add-Member -MemberType NoteProperty -Name OrgId    -Value "$orgId"  }
-    if($orgName -ne $null) { $object | Add-Member -MemberType NoteProperty -Name OrgName  -Value "$orgName"}
+    $object | Add-Member -MemberType NoteProperty -Name ID        -Value "$id"
+    $object | Add-Member -MemberType NoteProperty -Name Name      -Value "$name"
+    $object | Add-Member -MemberType NoteProperty -Name Class     -Value "$class"
+    $object | Add-Member -MemberType NoteProperty -Name LinksUpTo -Value $linksUpTo.ID  
+    if($orgId      -ne $null) { $object | Add-Member -MemberType NoteProperty -Name OrgId     -Value "$orgId"        }
+    if($orgName    -ne $null) { $object | Add-Member -MemberType NoteProperty -Name OrgName   -Value "$orgName"      }
     Write-Output $object
 }
 
-function generate_org_associations($maxDepth, $minSub, $maxSub){
-	
+function generate_org_associations($maxDepth, $minSub, $maxSub){	
+    __generate_org_association $maxDepth $null $minSub $maxSub
     
 }
 
 function __generate_org_association($maxDepth, $parentName, $minSub, $maxSub){
-	
+	if($maxDepth -gt -1){
+        $IamYourFather = $(generate_random_employee $parentName)
+        Write-Output($IamYourFather)
+        __generate_org_association $($maxDepth-1) $IamYourFather $minSub $maxSub
+    }
     
 }
 
@@ -92,3 +97,6 @@ function  __generate_random_department(){
 	
 
 }
+
+
+generate_org_associations  6  0 2
