@@ -36,8 +36,9 @@ function randomChars(){
 
 function department_name(){
     #TODO think of more interesting
-
+    Write-Output("Classified-Department");
 }
+
 
 $orgUniqueIdCount=1;
 function getOrgUniqueID(){
@@ -45,6 +46,16 @@ function getOrgUniqueID(){
     Write-Output($orgUniqueIdCount++)
 }
 
+
+#TODO Find amusing org lists to generate from with style
+function generate_random_department($linksUpTo){
+    $unit = $(generate_org_node $(getOrgUniqueID) $(department_name) "DEPARTMENT" $linksUpTo)
+    Write-Output($unit)
+}
+
+# Load the random name files only after function called.  Clear afterwards
+#  Things to consider:   PersonId, FirstName, LastName, Level, CategoryTypeA, CategoryTypeB, Location, Gender 
+#  Mqy should think of generic descriptors types.  Example Level is a progression, but category Type might be like an enum
 function generate_random_employee($linksUpTo){
     $unit = $(generate_org_node $(getOrgUniqueID) $(random_popular_name) "EMPLOYEE" $linksUpTo)
     Write-Output($unit)
@@ -67,16 +78,20 @@ function generate_org_associations($maxDepth, $minSub, $maxSub){
     
 }
 
+#generate_random_department
 function __generate_org_association($maxDepth, $parentName, $minSub, $maxSub){
 	if($maxDepth -gt -1){
-        $IamYourFather = $(generate_random_employee $parentName)
+        if($maxDepth -eq 0){ $IamYourFather = $(generate_random_employee $parentName) }
+        else{ $IamYourFather = $(generate_random_department $parentName) } 
         Write-Output($IamYourFather)
-        __generate_org_association $($maxDepth-1) $IamYourFather $minSub $maxSub
+        for($i=0;$i -lt $(Get-Random -Minimum $minSub -Maximum $maxSub) ; $i++){
+            __generate_org_association $($maxDepth-1) $IamYourFather $minSub $maxSub
+        }
     }
     
 }
 
-#Example: get_100_random_employees | ConvertTo-Json
+# Example: get_100_random_employees | ConvertTo-Json
 function get_100_random_employees(){
     $employees = New-Object System.Collections.ArrayList
     1..100 |%{ [void] $employees.Add( $(generate_random_employee) ) }
@@ -84,19 +99,4 @@ function get_100_random_employees(){
 }
 
 
-# Load the random name files only after function called.  Clear afterwards
-#  Things to consider:   PersonId, FirstName, LastName, Level, CategoryTypeA, CategoryTypeB, Location, Gender 
-#  Mqy should think of generic descriptors types.  Example Level is a progression, but category Type might be like an enum
-function __generate_random_person(){
-	
-}
-
-
-# Find amusing lists to generate from 
-function  __generate_random_department(){
-	
-
-}
-
-
-generate_org_associations  6  0 2
+generate_org_associations  3  1 8
