@@ -1,5 +1,9 @@
 
 function md5($fileName){
+	if(!$(Test-Path $fileName )){
+		Write-Warning("Cannot find file at path: '$fileName'")
+		return
+	}
 	$filePath = $(dir $fileName).FullName
 	$md5  = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
 	$hash = [System.BitConverter]::ToString($md5.ComputeHash([System.IO.File]::ReadAllBytes($filePath)))
