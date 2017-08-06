@@ -38,3 +38,33 @@ function wirelessNetworksAvailable{
 		$GLOBAL:ActiveNetworks|sort -d signal|format-table Signal,SSID,Auth,Encryption,BSSID,Radiotype,Channel
 	}
 }
+
+
+function wifiSavedPasswords(){
+    
+    #https://blogs.technet.microsoft.com/heyscriptingguy/2015/11/23/get-wireless-network-ssid-and-password-with-powershell/
+
+    $x=netsh.exe wlan show profiles
+    $wifiNames=$x|?{$_.toString() -like "*All User Profile*" }|%{$($_ -split ': ')[1]}
+
+    $wifiNames|%{wifiPassword($_)}
+
+
+}
+
+function wifiPassword($name){
+    if($name -eq $null){
+        return;
+    }
+    $wifiDetails=netsh.exe wlan show profiles name="$name" key=clear
+    $passwordSpot=$($wifiDetails|?{$_.toString() -like "*Key Content*"})
+    $password = "<_NULL_>"
+    if($passwordSpot -ne $NULL){
+        $password = $( $passwordSpot -split(":"))[1].Trim()
+    }
+    [pscustomobject] @{
+        wifiProfileName = $name
+        password        = $password
+    }
+
+}
